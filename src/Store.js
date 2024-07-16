@@ -1,13 +1,20 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
-const initialState = {
+// initial state variables for accounts
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
+const initialStateCustomer = {
+  fullName: "",
+  nationalID: "",
+  createdAt: "",
+};
+
 // set a default parameter
-function reducer(state = initialState, action) {
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     // state domain and event name
     case "account/deposit":
@@ -34,16 +41,84 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt,
+      };
+    case "customer/updateName":
+      return { ...state, fullName: action.payLoad };
+    default:
+      return state;
+  }
+}
 
-store.dispatch({ type: "account/deposit", payload: 500 });
-console.log(store.getState());
-store.dispatch({ type: "account/withdraw", payload: 150 });
-
-store.dispatch({
-  type: "account/requestLoan",
-  payload: { amount: 1000, purpose: "Buy a car" },
+// create a root reducer to combine reducers
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
 });
+
+const store = createStore(rootReducer);
+
+console.log(store.getState());
+// store.dispatch({ type: "account/withdraw", payload: 150 });
+
+// store.dispatch({
+//   type: "account/requestLoan",
+//   payload: { amount: 1000, purpose: "Buy a car" },
+// });
+// console.log(store.getState());
+
+// action creators
+function deposit(amount) {
+  return { type: "account/deposit", payload: amount };
+}
+
+function withdraw(amount) {
+  return { type: "account/withdraw", payload: amount };
+}
+function requestLoan(amount, purpose) {
+  return { type: "account/payLoan", payload: { amount, purpose } };
+}
+function payLoan() {
+  return { type: "account/payLoan" };
+}
+
+store.dispatch(deposit(1000));
+
+console.log(store.getState());
+
+store.dispatch(withdraw(450));
+
+console.log(store.getState());
+
+store.dispatch(requestLoan(4, "buy a chocolate bar"));
+
 console.log(store.getState());
 
 // action creators
+function createCustomer(fullName, nationalID) {
+  // convention is to have the action creator name identical to the event name
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalID, createdAt: new Date().toISOString },
+  };
+}
+
+function updateName(fullName) {
+  return {
+    type: "account/updateName",
+    payLoad: fullName,
+  };
+}
+
+store.dispatch(createCustomer("John Doe", "123456789"));
+console.log(store.getState());
+
+store.dispatch(deposit(250));
+console.log(store.getState());
