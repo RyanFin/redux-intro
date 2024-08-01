@@ -28,7 +28,9 @@ function AccountOperations() {
 
     // reset the state
     setDepositAmount("");
-    setCurrency("");
+
+    // set currency back to its default currency
+    setCurrency("USD");
   }
 
   function handleWithdrawal() {

@@ -70,4 +70,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 - Install Redux Dev tools Chrome extension
-- npm i redux-devtools-extension
+- `$ npm i redux-devtools-extension`
+- New Redux NPM install: `$ npm i @reduxjs/toolkit`
