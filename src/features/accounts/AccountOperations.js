@@ -24,7 +24,8 @@ function AccountOperations() {
       return;
     }
 
-    dispatch(deposit(depositAmount, currency));
+    // dispatch(deposit(depositAmount, currency));
+    dispatch(deposit(depositAmount));
 
     // reset the state
     setDepositAmount("");
