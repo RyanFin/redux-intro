@@ -1,44 +1,41 @@
-const initialStateCustomer = {
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
   fullName: "",
   nationalID: "",
   createdAt: "",
 };
 
-export default function customerReducer(state = initialStateCustomer, action) {
-  switch (action.type) {
-    case "customer/createCustomer":
-      return {
-        ...state,
-        fullName: action.payload.fullName,
-        nationalID: action.payload.nationalID,
-        createdAt: action.payload.createdAt,
-      };
-    case "customer/updateName":
-      return { ...state, fullName: action.payload`` };
-    default:
-      return state;
-  }
-}
+const customerSlice = createSlice({
+  name: "customer",
+  initialState,
+  reducers: {
+    createCustomer: {
+      // multiple payloads, so we must prepare in this example...
+      prepare(fullName, nationalID) {
+        return {
+          payload: {
+            fullName,
+            nationalID,
+            // even if one input is created for the reducer, if I want a 'createdAt' field I must
+            createdAt: new Date().toISOString(),
+          },
+        };
+      },
 
-// action creators
-export function createCustomer(fullName, nationalID) {
-  // convention is to have the action creator name identical to the event name
-  return {
-    type: "customer/createCustomer",
-    payload: { fullName, nationalID, createdAt: new Date().toISOString },
-  };
-}
+      reducer(state, action) {
+        state.fullName = action.payload.fullName;
+        state.nationalID = action.payload.nationalID;
+        state.createdAt = action.payload.createdAt;
+      },
+    },
+    // only a single payload variable that we are returning
+    updateName(state, action) {
+      state.fullName = action.payload;
+    },
+  },
+});
 
-export function updateName(fullName) {
-  return {
-    type: "customer/updateName",
-    payload: fullName,
-  };
-}
+export const { createCustomer, updateName } = customerSlice.actions;
 
-// store.dispatch(createCustomer("John Doe", "123456789"));
-
-// console.log(store.getState());
-
-// store.dispatch(deposit(250));
-// console.log(store.getState());
+export default customerSlice.reducer;
